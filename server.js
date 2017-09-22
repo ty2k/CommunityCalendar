@@ -6,12 +6,13 @@ const app               = express();
 const PORT              = process.env.PORT || 3000;
 const ENV               = process.env.NODE_ENV || 'development';
 const googleMapsApiKey  = process.env.GOOGLE_MAPS_API_KEY;
-const helmet            = require('helmet');
-// const pg                = require('pg');
-const knexConfig        = require('./knexfile');
-const db                = require('./db');
-const cookieSession     = require('cookie-session');
 const bodyParser        = require('body-parser');
+const compression       = require('compression');
+const cookieSession     = require('cookie-session');
+const db                = require('./db');
+const helmet            = require('helmet');
+const knexConfig        = require('./knexfile');
+const minifyHTML        = require('express-minify-html');
 const sass              = require('node-sass-middleware');
 const directoryRoutes   = require('./routes/directory');
 const eventCreateRoutes = require('./routes/create-event');
@@ -30,8 +31,25 @@ app.use(express.static('public'));
 // Use Helmet for secure HTTP headers
 app.use(helmet());
 
+// Use Compression for gzip compression middleware
+app.use(compression());
+
 app.use(cookieSession({
   keys: ['hello', 'world']
+}));
+
+// Use MinifyHTML to speed up HTML delivery in production
+app.use(minifyHTML({
+  override: true,
+  exception_url: false,
+  htmlMinifier: {
+    removeComments: true,
+    collapseWhitespace: true,
+    collapseBooleanAttributes: true,
+    removeAttributeQuotes: true,
+    removeEmptyAttributes: true,
+    minifyJS: true
+  }
 }));
 
 app.use((req, res, next) => {
@@ -40,6 +58,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// Use Sass with compressed (minified) output to speed up delivery
 app.use('/styles', sass({
   src: __dirname + '/styles',
   dest: __dirname + '/public/styles',
