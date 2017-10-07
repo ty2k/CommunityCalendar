@@ -6,6 +6,8 @@ const app               = express();
 const PORT              = process.env.PORT || 3000;
 const ENV               = process.env.NODE_ENV || 'development';
 const googleMapsApiKey  = process.env.GOOGLE_MAPS_API_KEY;
+const KEY1              = process.env.COOKIE_SESSION_KEY_1;
+const KEY2              = process.env.COOKIE_SESSION_KEY_2;
 const bodyParser        = require('body-parser');
 const compression       = require('compression');
 const cookieSession     = require('cookie-session');
@@ -35,7 +37,7 @@ app.use(helmet());
 app.use(compression());
 
 app.use(cookieSession({
-  keys: ['hello', 'world']
+  keys: [KEY1, KEY2]
 }));
 
 // Use MinifyHTML to speed up HTML delivery in production
