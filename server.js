@@ -5,6 +5,7 @@ const express           = require('express');
 const app               = express();
 const PORT              = process.env.PORT || 3000;
 const ENV               = process.env.NODE_ENV || 'development';
+const googleAnalytics   = process.env.GOOGLE_ANALYTICS;
 const googleMapsApiKey  = process.env.GOOGLE_MAPS_API_KEY;
 const KEY1              = process.env.COOKIE_SESSION_KEY_1;
 const KEY2              = process.env.COOKIE_SESSION_KEY_2;
@@ -57,6 +58,7 @@ app.use(minifyHTML({
 app.use((req, res, next) => {
   res.locals.userId = req.session.userId;
   res.locals.apiKey = googleMapsApiKey;
+  res.locals.googleAnalytics = googleAnalytics;
   next();
 });
 
