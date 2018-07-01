@@ -7,6 +7,7 @@ const PORT              = process.env.PORT || 3000;
 const ENV               = process.env.NODE_ENV || 'development';
 const googleAnalytics   = process.env.GOOGLE_ANALYTICS;
 const googleMapsApiKey  = process.env.GOOGLE_MAPS_API_KEY;
+const HTTPS_ON          = process.env.HTTPS_ON;
 const KEY1              = process.env.COOKIE_SESSION_KEY_1;
 const KEY2              = process.env.COOKIE_SESSION_KEY_2;
 const bodyParser        = require('body-parser');
@@ -71,7 +72,7 @@ app.use('/styles', sass({
 }));
 
 // For production (Heroku) http:// requests, redirect to https://
-if (app.get('env') === 'production') {
+if (HTTPS_ON && app.get('env') === 'production') {
   app.use((req, res, next) => {
     if (req.header('X-Forwarded-Proto') !== 'https') {
       res.redirect(`https://${req.header('host')}${req.url}`);
